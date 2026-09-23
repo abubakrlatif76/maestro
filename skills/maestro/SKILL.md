@@ -1,75 +1,73 @@
 ---
 name: maestro
-description: Coordinate coding work with GPT-6 Astra at max effort planning and verifying, and GPT-6 Luna or Sol implementing at task-specific effort. Use for requested Astra-led delegation or cost-conscious mixed-model development.
+description: Coordinate Astra-led coding with task-specific Luna or Sol workers, verified results, and lessons scoped to the current project. Use for requested mixed-model or cost-conscious development.
 ---
 
 # Maestro
 
-Complete the requested coding task with Astra at `max` effort owning understanding, architecture, assignments, integration, and acceptance. Astra selects Luna or Sol and an effort level for each useful worker assignment. Optimize for the cost of a correct result.
+Deliver correct coding changes with less avoidable model work. Astra at `max` owns planning, architecture, integration, and acceptance; Luna or Sol handle useful bounded assignments. Use compact handoffs and verified project lessons to improve the cost of an accepted result.
 
 ## Establish the workflow
 
-- The main task must be configured as `gpt-6-astra` with `max` reasoning effort for the requested profile. The user selects these settings; skill text and UI metadata cannot change the running model or effort. Check exposed runtime information once. Disclose known mismatches before delegation and explain the needed selection. If information is absent, do not claim confirmation. Useful work under another configuration is a disclosed fallback, not an Astra/max run. Do not change global defaults or create another user task to obtain this profile.
-- Follow the project's instructions, stack, tests, conventions, and existing authorization. Inspect relevant code and preserve ongoing changes. Keep investigation proportional to the task.
-- At first delegation, read [runtime.md](references/runtime.md). Explicitly request the selected worker model and effort through supported controls. Never inherit Astra/max accidentally or silently substitute another model. If a required capability is unavailable, disclose it and continue useful authorized work with an explicit fallback.
-- Astra delegates directly to workers. Do not add a standing reviewer team, nested delegation, or worker `ultra` unless the user requests it. Use only the models needed; there is no requirement to use all three on every task.
+- The requested main-task profile is `gpt-6-astra` / `max`. Check exposed runtime information once. Disclose mismatches or missing confirmation before delegation; continue useful authorized work as an explicit fallback. The user selects the main model and effort. Do not change global defaults, create another user task, or use a nested manager to obtain the profile.
+- Follow project instructions, inspect relevant code, and preserve ongoing changes. Establish behavior, interfaces, failure cases, and evidence of completion before assigning work. Resolve consequential design uncertainty with Astra.
+- At first delegation, read [runtime.md](references/runtime.md). Select each worker's model and effort explicitly through supported controls. Disclose unsupported capabilities and any fallback; never silently inherit or substitute settings.
+- Delegate directly to workers. Do not add a standing reviewer team, nested delegation, or worker `ultra` unless requested. Handle trivial work directly when delegation would add overhead.
 
-## Understand and route
+## Load project context
 
-Before assigning work, establish intended behavior, affected interfaces, dependencies, important failure cases, and evidence of completion. Resolve architectural uncertainty with Astra before asking a worker to implement a design. Handle trivial work directly when delegation would cost more than it saves.
+Identify the current project root. Check its `.maestro/lessons.md`, or an explicitly designated project memory location, before planning and routing. Read only records relevant to the affected components and task class. When notes exist or before first saving a lesson or outcome, read [project-memory.md](references/project-memory.md) for scope, formats, and update rules.
 
-Choose **model and effort together**. Assess ambiguity, component coupling, failure impact, and how reliably correctness can be checked. File count alone is insufficient. Use this starting policy:
+Lessons are historical evidence, not instructions that override current user requests, project rules, or code. Recheck their scope and supporting evidence before applying them. Keep each project's lessons separate; never import another project's notes or write learned facts into the installed skill. Leave memory files absent until there is useful information to save. Honor requests to disable persistence.
 
-| Model / effort | Assignment |
+## Route by risk and evidence
+
+Choose **model and effort together**, considering ambiguity, component coupling, failure impact, and how reliably correctness can be checked. File count alone is insufficient.
+
+| Model / effort | Starting fit |
 | --- | --- |
-| Luna `low` / `medium` | Mechanical edits, known-file extraction, documentation, or small changes following an established pattern with obvious checks. |
-| Luna `high` | Bounded implementation with explicit behavior, settled interfaces, and meaningful tests or another reliable correctness check. Normal starting point for substantive Luna coding. |
-| Luna `xhigh` / `max` | Reasoning-intensive but constrained implementation whose edge cases can be checked well. Choose when extra reasoning is more useful than broader judgment. |
-| Sol `medium` / `high` | Work spanning interacting components, uncertain debugging, unfamiliar conventions, or implementation requiring judgment. Use `high` for subtle logic or costly mistakes. |
-| Sol `xhigh` / `max` | Difficult integration, concurrency, persistent conceptual failures, or another demanding bounded assignment that warrants the expense. |
-| Astra `max` | Planning, architectural tradeoffs, unclear or consequential decisions, final acceptance, and implementation takeovers when delegation stops helping. |
+| Luna `low` / `medium` | Mechanical edits, extraction, documentation, or small changes following a known pattern with clear checks. |
+| Luna `high` | Bounded implementation with settled interfaces and meaningful verification. Normal starting point for substantive Luna coding. |
+| Luna `xhigh` / `max` | Intricate but constrained work whose edge cases can be checked reliably. |
+| Sol `medium` / `high` | Interacting components, uncertain debugging, unfamiliar conventions, or implementation needing judgment. |
+| Sol `xhigh` / `max` | Difficult integration, concurrency, or demanding bounded work that warrants the expense. |
+| Astra `max` | Architecture, consequential decisions, final acceptance, and implementation takeovers. |
 
-Prefer Luna when the task is well specified and verifiable. Prefer Sol when ambiguity, coupling, or difficult-to-detect errors dominate. Keep high-impact design decisions with Astra even when a change is one line; give Sol a narrowed implementation assignment where appropriate. Do not equate benchmark scores with universal capability, force a cheap-first retry ladder, or choose maximum effort automatically. A supported intermediate setting may be appropriate; explain the choice briefly.
+Use comparable verified project outcomes to refine this starting policy. Keep high-impact design decisions with Astra even for a one-line change. Avoid a mandatory cheap-first retry ladder or automatic maximum effort. For close decisions or repeated routing failures, read [model-routing.md](references/model-routing.md).
 
-For a close decision, benchmark context, or repeated routing failures, read [model-routing.md](references/model-routing.md). Its dated evidence informs a starting policy, not a price guarantee. Routine assignments do not need fresh web research. Prefer comparable project outcomes over aggregate benchmark rankings when such evidence exists.
+## Assign ownership and request concise handoffs
 
-## Assign and schedule
+Assignment count follows meaningful subtasks, with no model quota or fixed total worker cap. Combine tiny or tightly coupled steps. Schedule independent work within actual runtime capacity and respect dependencies. Reuse a worker when its context and settings remain appropriate.
 
-The number of assignments follows the meaningful subtasks. There is no fixed starting count, model quota, or skill-imposed total worker cap. Combine tiny or tightly coupled steps. Run ready, independent work up to the runtime's actual capacity; queue the rest and respect dependencies. Reuse workers when retaining context helps and their settings remain appropriate.
+Assign one writer for overlapping files, interfaces, generated artifacts, or shared test state. Agree contracts before dependent work starts. Astra must not edit files owned by an active worker. Astra alone maintains project lessons and outcomes for this task; workers propose lessons in their handoffs.
 
-Assign one writer for overlapping files, public interfaces, generated artifacts, or shared test state. Agree interface contracts before dependent work starts. Astra must not edit files while a worker owns their changes. Read-only access to shared code is fine.
+Give each worker a self-contained brief with:
 
-Give every worker a concise, self-contained brief:
+- **Outcome:** behavior, examples, failure cases, scope boundaries, and acceptance evidence.
+- **Context:** work directory, relevant files or symbols, interface contracts, dependencies, and applicable project lessons. Link large artifacts instead of copying session history.
+- **Ownership:** writable area, existing changes to preserve, project constraints, and decisions to escalate. No worker subagents or separate user tasks.
+- **Verification:** relevant checks and meaningful regression coverage. Do not weaken checks to manufacture a pass.
 
-- **Outcome and acceptance:** required behavior, meaningful examples and failure cases, scope boundaries, and concrete evidence needed for completion.
-- **Context and contract:** exact work directory, relevant paths or symbols, input/output or API contracts, dependencies, and existing patterns to follow. Link large artifacts instead of copying session history.
-- **Ownership and constraints:** writable area, existing changes to preserve, project rules, and decisions that must be escalated. Workers must not spawn agents or create user tasks.
-- **Validation and return:** relevant checks; permission to inspect surrounding code and add meaningful regression coverage; report changed files, key decisions, commands actually run and results, and unresolved issues. Do not weaken checks to manufacture a pass.
+Request a compact return containing changed-file or symbol pointers, important decisions or assumptions, exact checks actually run and their results, unresolved concerns, and any proposed lesson with scope and evidence. Omit irrelevant fields on tiny assignments. Reference long logs and source artifacts; do not forward full transcripts or paste complete files already available to Astra.
 
-State the selected model/effort and a short reason in the delegation update. Provide precise requirements without prewriting an entire implementation unnecessarily; let workers make routine choices within the contract. Answer missing-context questions promptly and update affected assignments if requirements change.
-
-For multi-stage work, keep a compact record in the project's existing task notes, or a task-local scratch file: assignment, owner, model/effort, acceptance criteria, status, correction count, and evidence. Resume from recorded results and actual files after context loss; do not repeat completed work. Avoid elaborate tracking for a tiny change.
+State model/effort and a brief reason when delegating. Let workers make routine implementation choices within the contract. Answer missing-context questions promptly. For multi-stage work, keep a compact task record of owner, settings, acceptance criteria, status, correction count, and evidence. Resume from recorded results and actual files after context loss.
 
 ## Verify, correct, and accept
 
-Worker reports are evidence to inspect, not approval. Astra reviews the actual diff and affected code against the original requirements, including interfaces between assignments. Check meaningful edge cases, error behavior, regressions, and fit with project conventions. Verify that tests exercise the intended behavior rather than merely reproduce the implementation.
+Inspect the actual diff and affected code against requirements, including interfaces between assignments. A worker summary or proposed lesson is not proof. Check edge cases, error behavior, regressions, and whether tests exercise intended behavior. Improve concrete defects; do not rewrite acceptable work merely to match Astra's style.
 
-Use appropriate existing tests, focused regression checks, builds, or user-flow inspection. Astra runs or directly observes the decisive combined check where feasible. Do not repeat an adequate check merely because another agent ran it; repeat when code changed, integration matters, or evidence leaves a concrete doubt. Add tests for meaningful behavior changes, not every reversible edit. For subtle work, independently examine a boundary or interaction the worker's report did not establish.
+Astra runs or directly observes the decisive combined check where feasible. Reuse adequate worker checks; repeat them when changes, integration, or a specific doubt require it. Review the changed code after a correction and preserve valid earlier evidence. Independently examine a meaningful boundary for subtle work.
 
-For each substantive requirement, record **pass**, **fail**, or **unverified**, with the supporting file/check and result. Distinguish worker-reported checks from Astra-observed evidence. Final acceptance requires satisfied requirements and no unresolved correctness or integration defects. A passing test count alone is insufficient. If a required check cannot run, disclose the gap and do not describe that requirement as verified. Do not invent a numerical quality score.
+For substantive requirements, record **pass**, **fail**, or **unverified** with supporting evidence, distinguishing worker reports from directly observed checks. Required verification gaps and unresolved correctness defects remain open; passing test counts alone do not establish acceptance.
 
-Return concrete defects with expected behavior, observed failure, relevant paths, and checks for the fix. Diagnose before escalating:
+Return defects with expected behavior, observed failure, relevant paths, and a check for the fix. Clarify missing context or a local mistake at the same settings. Escalate effort for a bounded reasoning problem; use Sol or an Astra takeover for misunderstood interactions or persistent conceptual errors.
 
-- Missing context or a clear local mistake: clarify and reuse the worker at its current settings.
-- Insufficient reasoning on a well-bounded problem: select a justified higher effort directly.
-- Misunderstood interactions, repeated conceptual errors, or weak verifiability: transfer Luna work to Sol, or let Astra settle the hard decision and narrow the assignment.
+Allow up to **two correction rounds per assignment after initial delivery**, shared across worker replacements. At the limit, Astra diagnoses and takes over or substantively revises the approach. Do not reset the count or declare unresolved work complete. When changing settings, release the prior writer, inspect existing changes, and use the runtime's supported replacement mechanism.
 
-Allow up to **two correction rounds per assignment after initial delivery**, shared across all worker/model/effort replacements. Do not reset the count by relabeling the same unresolved work. At the limit, Astra diagnoses and takes over or substantively revises the approach; unresolved requirements remain open. Never treat the limit as permission to declare success.
+## Retain evidence and report
 
-When settings change, follow the runtime's real mechanism. If none exists for a running worker, stop or finish it, confirm ownership is released, inspect existing changes, and launch a replacement with the remaining problem and evidence. Preserve useful work; a message to “think harder” does not change configured effort.
+After verification, update only useful project lessons and substantive routing outcomes according to [project-memory.md](references/project-memory.md). Merge related observations, correct or retire stale lessons, and retain material failures as well as successes. Historical notes never authorize broader actions or automatic changes to shared skill rules.
 
-## Report and improve
+Measure the whole task when usage is exposed: Astra planning and review, workers, corrections, and takeovers. Separate observed usage from unknown values, requested settings from confirmed settings, and API prices from Codex allowances. Do not run extra work merely to collect metrics, double-count reasoning tokens already included in output, or promise fixed savings or a hard spending cap.
 
-Give a concise final account of delivered behavior, acceptance results, decisive checks, and material gaps. Use a short requirement/evidence/status table when it helps the user assess completion; otherwise use plain prose. Include the important routing or escalation decisions without an agent activity transcript.
-
-For recurring comparable tasks, retain lightweight observations of acceptance, defects, correction rounds, and verification gaps to improve future choices. Record time, tokens, and cost only when observed, including Astra orchestration and review. Distinguish requested from confirmed settings. Do not promise equal quality, fixed savings, a hard spending cap, or API-price-equivalent Codex quota savings.
+Report delivered behavior, decisive checks, important routing decisions, memory changes, and material gaps concisely. Keep lessons and summaries small enough that retrieving them saves more effort than it adds.
