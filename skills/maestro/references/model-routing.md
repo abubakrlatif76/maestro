@@ -1,23 +1,19 @@
 # Routing difficult worker assignments
 
-The user-selected `gpt-6-astra` at `max` remains the orchestrator. Astra frames the problem, resolves uncertain design choices, sets acceptance criteria, integrates changes, and accepts the final code after inspecting the diff and evidence. A worker's self-report is a handoff, not acceptance. Select the worker **model and effort together** for each bounded assignment; a higher effort on Luna can be a better fit than a lower effort on Sol for some tasks, but neither name nor setting guarantees an outcome. Use the runtime's supported settings.
+Choose the worker model and effort together. Use ambiguity, component coupling, failure impact, and the strength of available checks. Astra at the user-selected `max` profile retains architectural decisions and final acceptance.
 
-Judge the assignment by ambiguity, coupling to other components, impact of a wrong answer, ease of verifying the result, and observed results on comparable work. A well-specified parser fix with clear inputs, outputs, and testable edge cases can go to Luna at `high` or `max`: the reasoning may be intricate, but the task boundary and oracle are strong. Give the worker representative malformed inputs, compatibility expectations, and the decisive tests. If it cannot satisfy those checks, inspect whether the issue is a missing requirement, a bad interface assumption, or insufficient worker capability before changing settings.
+A well-specified parser fix with explicit inputs, outputs, compatibility rules, and testable edge cases can suit Luna at `high` or above. Extra reasoning can be useful when the boundary is settled and correctness is easy to check. Give the worker the decisive cases without prescribing an entire implementation.
 
-A state or concurrency bug crossing components has a weaker oracle and may require changes to shared contracts. Astra should first map the state transitions and ownership boundaries, then give a bounded implementation to Sol at `high` or above when the scope supports it. A tiny permission check can carry severe failure impact despite touching one line. With an incomplete security oracle, keep policy and threat reasoning with Astra and assign the concrete implementation to Sol. File count alone does not make Luna the economical choice.
+A state or concurrency bug crossing components often needs Sol at `high` or above after Astra establishes the ownership and interface contracts. Small changes can still carry consequential risks. Keep unsettled design or policy decisions with Astra and narrow the implementation assignment before delegation.
 
-Avoid serially trying every effort level. Start with the least costly **plausible** model and effort for the risk profile, use a targeted correction at the same setting when the problem is concrete, and escalate only when the evidence points to a reasoning limit. If the hard part is an unresolved product or architecture decision, Astra should settle it before worker implementation. [OpenAI's model-selection guide](https://developers.openai.com/api/docs/guides/model-selection) provides general guidance; local acceptance evidence decides this workflow's routing.
+Avoid trying every effort level serially. Start with the least expensive plausible model/effort for the risk and evidence available. Clarify a concrete mistake at the same settings; change effort or model when the observed failure warrants it. A worker handoff is evidence to inspect, not final acceptance.
 
-## Dated evidence note — 2026-09-22
+## Use project outcomes to improve routing
 
-Published [same-family coding results](https://openai.com/index/introducing-gpt-6-sol-and-luna/#coding) show why benchmark ties are not general equivalence:
+Read only comparable records in the current project's `.maestro/outcomes.md` when they can inform a close decision. Follow [project-memory.md](project-memory.md) for scope and accounting. Include failures, correction rounds, takeovers, and verification gaps. Separate a bad assignment or missing contract from a worker's implementation failure.
 
-| Benchmark | Luna | Sol |
-| --- | --- | --- |
-| FrontierCode | `high` 37.3%, $0.067 | `low` 37.3%, $0.45 |
-| DeepSWE | `high` 59.3%, $0.084 | `medium` 56.6%, $0.38 |
-| DeepSWE | `max` 66.6%, $0.22 | `xhigh` 66.6%, $1 |
+Optimize the cost of an accepted result, including Astra's planning and review. A smaller worker that repeatedly needs repairs may cost more overall. Parallelism can reduce elapsed time while increasing total usage. Reuse sufficient checks and relevant context; do not cut acceptance criteria to make a cheaper route appear successful.
 
-On FrontierCode, Luna `max` reaches 42.4%, below Sol `medium` at 45.9%. Standard short-context [API prices](https://developers.openai.com/api/docs/pricing) per million input/output tokens are Astra $10/$50, Sol $2/$10, and Luna $0.10/$0.50. These are API costs, not Codex quotas. [Reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning) are billed as output even though they are not visible answer text; higher effort can consume more. The published examples do not promise equal quality or a fixed saving on this project.
+Evaluate a proposed routing change against representative tasks using consistent acceptance checks and cases outside the examples used to formulate it. Compare defects, corrections, total measured usage, and completion time where available. Preserve material failures in the comparison. Keep the lighter route only when it meets the required quality bar. Do not make a universal rule from one smoke test or a benchmark tie.
 
-For future calibration, record the task class, worker model and effort, acceptance result, corrections, and gaps in the verification evidence. Record time or cost only when the runtime exposes it. Compare similar task classes with similar oracles, then adjust the next assignment accordingly. A single successful smoke test or benchmark tie is too little evidence for a permanent routing rule.
+Published model guidance is a starting point. Use current [OpenAI model-selection guidance](https://developers.openai.com/api/docs/guides/model-selection) when external guidance is needed; routine assignments do not need fresh research. [Workflow evaluation guidance](https://developers.openai.com/api/docs/guides/agent-evals) describes using observed failures and repeatable tasks to evaluate changes. API prices and benchmark costs do not establish Codex allowance savings.
