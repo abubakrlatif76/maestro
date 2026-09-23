@@ -1,4 +1,4 @@
 interface:
   display_name: "Maestro"
-  short_description: "Astra max leads; Luna and Sol implement"
-  default_prompt: "Use $maestro with Astra at max effort to plan and verify this coding task, choosing Luna or Sol and the appropriate effort for each worker assignment."
+  short_description: "Astra-led coding with verified project lessons"
+  default_prompt: "Use $maestro with Astra at max effort to plan and verify this coding task, choose Luna or Sol workers as appropriate, and apply and update verified lessons for this project."
